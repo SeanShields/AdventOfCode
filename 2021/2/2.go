@@ -35,13 +35,10 @@ func part1(input string) int {
 		switch direction {
 		case "forward":
 			horizontal += amount
-			break
 		case "up":
 			depth -= amount
-			break
 		case "down":
 			depth += amount
-			break
 		default:
 			panic("error")
 		}
@@ -69,13 +66,10 @@ func part2(input string) int {
 		case "forward":
 			horizontal += amount
 			depth += aim * amount
-			break
 		case "up":
 			aim -= amount
-			break
 		case "down":
 			aim += amount
-			break
 		default:
 			panic("error")
 		}
