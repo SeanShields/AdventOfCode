@@ -5,11 +5,6 @@ import (
 	"os"
 )
 
-type coords struct {
-	x int
-	y int
-}
-
 func main() {
 	path := os.Args[1]
 	input := readFile(path)
@@ -19,6 +14,11 @@ func main() {
 
 	part2Answer := solvePart2(input)
 	fmt.Printf("Part 2 Answer: %v", part2Answer)
+}
+
+type coords struct {
+	x int
+	y int
 }
 
 func solvePart1(input string) int {
@@ -44,15 +44,6 @@ func solvePart1(input string) int {
 		visitedCoords = append(visitedCoords, coord)
 	}
 	return total
-}
-
-func coordsExist(coords []coords, coord coords) bool {
-	for _, c := range coords {
-		if c.x == coord.x && c.y == coord.y {
-			return true
-		}
-	}
-	return false
 }
 
 func solvePart2(input string) int {
@@ -91,6 +82,15 @@ func solvePart2(input string) int {
 		}
 	}
 	return total
+}
+
+func coordsExist(coords []coords, coord coords) bool {
+	for _, c := range coords {
+		if c.x == coord.x && c.y == coord.y {
+			return true
+		}
+	}
+	return false
 }
 
 func readFile(path string) string {
