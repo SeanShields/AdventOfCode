@@ -18,7 +18,7 @@ func main() {
 	fmt.Printf("Part 2: %v", part2)
 }
 
-func part1(input string) string {
+func part1(input string) int {
 	larger := 0
 	depths := strings.Split(input, "\r\n")
 
@@ -35,10 +35,10 @@ func part1(input string) string {
 		}
 	}
 
-	return strconv.Itoa(larger)
+	return larger
 }
 
-func part2(input string) string {
+func part2(input string) int {
 	larger := 0
 	depthsInput := strings.Split(input, "\r\n")
 	depths := toInt(depthsInput)
@@ -60,7 +60,7 @@ func part2(input string) string {
 		}
 	}
 
-	return strconv.Itoa(larger)
+	return larger
 }
 
 func toInt(arr []string) []int {
