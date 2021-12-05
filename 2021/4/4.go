@@ -35,8 +35,27 @@ func solvePart1(input string) int {
 	panic("winner not found")
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	lines := strings.Split(input, "\r\n")
+	numbers := strings.Split(lines[0], ",")
+	boards := parseBoards(lines)
+	winners := []int{}
+	for _, n := range numbers {
+		number, _ := strconv.Atoi(n)
+		for b, board := range boards {
+			if exists(winners, b) {
+				continue
+			}
+			board.mark(number)
+			if len(winners) == len(boards)-2 && board.isBingo() {
+				return number * board.sumUnmarkedSquares()
+			} else if board.isBingo() {
+				winners = append(winners, b)
+			}
+		}
+	}
+
+	panic("winner not found")
 }
 
 type Board []Square
@@ -45,10 +64,27 @@ type Square struct {
 	marked bool
 }
 
+func exists(arr []int, i int) bool {
+	for _, num := range arr {
+		if num == i {
+			return true
+		}
+	}
+	return false
+}
+
 func (board *Board) mark(number int) {
 	for i, square := range *board {
 		if square.number == number {
 			(*board)[i].marked = true
+		}
+	}
+}
+
+func (board *Board) unmark(number int) {
+	for i, square := range *board {
+		if square.number == number {
+			(*board)[i].marked = false
 		}
 	}
 }
