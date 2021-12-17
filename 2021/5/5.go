@@ -130,10 +130,6 @@ func (graph *Graph) plotDiagonalUp(x0 int, y0 int, x1 int, y1 int) {
 	}
 }
 
-func getSlope(start Coords, end Coords) int {
-	return (end.y - start.y) / (end.x - start.x)
-}
-
 func max(x int, y int) int {
 	if x > y {
 		return x
