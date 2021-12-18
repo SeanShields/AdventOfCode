@@ -36,8 +36,43 @@ func solvePart1(input string) int {
 	return fuelOptions[0]
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	c := strings.Split(input, ",")
+	positions := toInt(c)
+	sort.Ints(positions)
+
+	fuelOptions := []int{}
+	position := 0
+	for position < positions[len(positions)-1] {
+		fuel := 0
+		for _, p := range positions {
+			distance := max(position, p) - min(position, p)
+			cost := getCost(distance)
+			fuel += cost
+		}
+		fuelOptions = append(fuelOptions, fuel)
+		position++
+	}
+
+	sort.Ints(fuelOptions)
+	return fuelOptions[0]
+}
+
+func getCost(distance int) int {
+	costs := []int{}
+	for distance > 0 {
+		costs = append(costs, distance)
+		distance--
+	}
+	return sum(costs)
+}
+
+func sum(slice []int) int {
+	sum := 0
+	for _, s := range slice {
+		sum += s
+	}
+	return sum
 }
 
 func toInt(slice []string) []int {
