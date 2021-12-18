@@ -44,8 +44,45 @@ func solvePart1(input string) int {
 	return len(lanternfish)
 }
 
-func solvePart2(input string) int {
-	return 0
+func solvePart2(input string) int64 {
+	fish := strings.Split(input, ",")
+
+	lanternfish := toInt(fish)
+	counts := make(map[int]int64)
+	for _, fish := range lanternfish {
+		counts[fish]++
+	}
+
+	i := 0
+	for i < 256 {
+		zeroes := counts[0]
+		f := 0
+		for f <= 8 {
+			if f == 8 {
+				counts[f] = zeroes
+				f++
+				continue
+			}
+			counts[f] = counts[f+1]
+			if f == 6 {
+				counts[f] += zeroes
+			}
+			f++
+		}
+		i++
+	}
+
+	return sum(counts)
+}
+
+func sum(counts map[int]int64) int64 {
+	var sum int64
+	f := 0
+	for f <= 8 {
+		sum += counts[f]
+		f++
+	}
+	return sum
 }
 
 func toInt(slice []string) []int {
