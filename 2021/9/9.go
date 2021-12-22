@@ -117,9 +117,9 @@ func findPoint(rows []string, r int, c int) Point {
 	panic("point not found")
 }
 
-func (basin *Basin) calculate(rows []string, lowPoint Point) {
-	for _, adjacent := range findAdjacents(rows, lowPoint.r, lowPoint.c) {
-		if adjacent.digit != 9 && adjacent.digit > lowPoint.digit && !exists(*basin, adjacent) {
+func (basin *Basin) calculate(rows []string, point Point) {
+	for _, adjacent := range findAdjacents(rows, point.r, point.c) {
+		if adjacent.digit != 9 && adjacent.digit > point.digit && !exists(*basin, adjacent) {
 			*basin = append(*basin, adjacent)
 			basin.calculate(rows, adjacent)
 		}
