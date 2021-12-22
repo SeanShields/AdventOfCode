@@ -24,7 +24,13 @@ func solvePart1(input string) int {
 	lowPoints := []int{}
 	for r, row := range rows {
 		for c, char := range row {
+			digit := int(char - '0')
 			top := ""
+			right := ""
+			bottom := ""
+			left := ""
+			adjacent := []int{}
+
 			if r != 0 {
 				row := rows[r-1]
 				for p, cc := range row {
@@ -33,13 +39,9 @@ func solvePart1(input string) int {
 					}
 				}
 			}
-
-			right := ""
 			if c < len(row)-1 {
 				right = string(row[c+1])
 			}
-
-			bottom := ""
 			if r < len(rows)-1 {
 				row := rows[r+1]
 				for p, cc := range row {
@@ -48,14 +50,9 @@ func solvePart1(input string) int {
 					}
 				}
 			}
-
-			left := ""
 			if c != 0 {
 				left = string(row[c-1])
 			}
-
-			digit := int(char - '0')
-			adjacent := []int{}
 			if top != "" {
 				t, _ := strconv.Atoi(top)
 				adjacent = append(adjacent, t)
@@ -74,7 +71,7 @@ func solvePart1(input string) int {
 			}
 
 			if isLow(adjacent, digit) {
-				lowPoints = append(lowPoints, int(char-'0'))
+				lowPoints = append(lowPoints, digit)
 			}
 		}
 	}
