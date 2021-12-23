@@ -19,31 +19,73 @@ func main() {
 
 func solvePart1(input string) int {
 	lines := strings.Split(input, "\r\n")
-	//sum := 0
+	// all inner chunks have to close before we get to the end of the curernt chunk
+	illegal := []string{}
 	for _, line := range lines {
-		illegal := ""
-		for _, char := range line {
-
+		result := processChunk(line, 0)
+		if result != "" {
+			illegal = append(illegal, result)
 		}
 	}
-	return 0
+	fmt.Printf("%v\n", illegal)
+	return sumIllegalCharValues(illegal)
 }
 
 func solvePart2(input string) string {
 	return "Not Implemented"
 }
 
-func sumIllegalCharValues(chars string) int {
+func processChunk(line string, start int) string {
+	chars := strings.Split(line, "")
+	for i := start; i < len(chars); i++ {
+		if isOpeningChar(chars[i]) {
+			return processChunk(line, i)
+		} else {
+			return chars[i]
+		}
+	}
+	return ""
+}
+
+func isOpeningChar(char string) bool {
+	switch char {
+	case "(":
+		return true
+	case "[":
+		return true
+	case "{":
+		return true
+	case "<":
+		return true
+	}
+	return false
+}
+
+func getClosingChar(openingChar rune) rune {
+	switch openingChar {
+	case '(':
+		return ')'
+	case '[':
+		return ']'
+	case '{':
+		return '}'
+	case '<':
+		return '>'
+	}
+	panic("could not find closing char")
+}
+
+func sumIllegalCharValues(chars []string) int {
 	sum := 0
 	for _, char := range chars {
 		switch char {
-		case ')':
+		case ")":
 			sum += 3
-		case ']':
+		case "]":
 			sum += 57
-		case '}':
+		case "}":
 			sum += 1197
-		case '>':
+		case ">":
 			sum += 25137
 		}
 	}
