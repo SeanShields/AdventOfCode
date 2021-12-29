@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -19,10 +20,9 @@ func main() {
 
 func solvePart1(input string) int {
 	lines := strings.Split(input, "\r\n")
-	// all inner chunks have to close before we get to the end of the curernt chunk
 	illegal := []string{}
 	for _, line := range lines {
-		result := processChunk(line, 0, &[]string{})
+		result := processIllegalChunk(line, 0, &[]string{})
 		if result != "" {
 			illegal = append(illegal, result)
 		}
@@ -30,16 +30,31 @@ func solvePart1(input string) int {
 	return sumIllegalCharValues(illegal)
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	lines := strings.Split(input, "\r\n")
+	scores := []int{}
+	for _, line := range lines {
+		closing := []string{}
+		open := &[]string{}
+		result := processIllegalChunk(line, 0, open)
+		incomplete := result == ""
+		if incomplete {
+			for _, o := range *open {
+				closing = append([]string{getClosingChar(o)}, closing...)
+			}
+			scores = append(scores, sumIncompleteCharValues(closing))
+		}
+	}
+	sort.Ints(scores)
+	return scores[(len(scores)-1)/2]
 }
 
-func processChunk(line string, start int, open *[]string) string {
+func processIllegalChunk(line string, start int, open *[]string) string {
 	chars := strings.Split(line, "")
 	for i := start; i < len(chars); i++ {
 		if isOpeningChar(chars[i]) {
 			*open = append(*open, chars[i])
-			return processChunk(line, i+1, open)
+			return processIllegalChunk(line, i+1, open)
 		} else if chars[i] != getClosingChar((*open)[len(*open)-1]) {
 			return chars[i]
 		} else {
@@ -89,6 +104,26 @@ func sumIllegalCharValues(chars []string) int {
 			sum += 1197
 		case ">":
 			sum += 25137
+		}
+	}
+	return sum
+}
+
+func sumIncompleteCharValues(chars []string) int {
+	sum := 0
+	for _, char := range chars {
+		if sum != 0 {
+			sum *= 5
+		}
+		switch char {
+		case ")":
+			sum += 1
+		case "]":
+			sum += 2
+		case "}":
+			sum += 3
+		case ">":
+			sum += 4
 		}
 	}
 	return sum
