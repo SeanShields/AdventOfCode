@@ -22,12 +22,11 @@ func solvePart1(input string) int {
 	// all inner chunks have to close before we get to the end of the curernt chunk
 	illegal := []string{}
 	for _, line := range lines {
-		result := processChunk(line, 0)
+		result := processChunk(line, 0, &[]string{})
 		if result != "" {
 			illegal = append(illegal, result)
 		}
 	}
-	fmt.Printf("%v\n", illegal)
 	return sumIllegalCharValues(illegal)
 }
 
@@ -35,13 +34,16 @@ func solvePart2(input string) string {
 	return "Not Implemented"
 }
 
-func processChunk(line string, start int) string {
+func processChunk(line string, start int, open *[]string) string {
 	chars := strings.Split(line, "")
 	for i := start; i < len(chars); i++ {
 		if isOpeningChar(chars[i]) {
-			return processChunk(line, i)
-		} else {
+			*open = append(*open, chars[i])
+			return processChunk(line, i+1, open)
+		} else if chars[i] != getClosingChar((*open)[len(*open)-1]) {
 			return chars[i]
+		} else {
+			*open = (*open)[:len(*open)-1]
 		}
 	}
 	return ""
@@ -61,16 +63,16 @@ func isOpeningChar(char string) bool {
 	return false
 }
 
-func getClosingChar(openingChar rune) rune {
+func getClosingChar(openingChar string) string {
 	switch openingChar {
-	case '(':
-		return ')'
-	case '[':
-		return ']'
-	case '{':
-		return '}'
-	case '<':
-		return '>'
+	case "(":
+		return ")"
+	case "[":
+		return "]"
+	case "{":
+		return "}"
+	case "<":
+		return ">"
 	}
 	panic("could not find closing char")
 }
