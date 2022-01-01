@@ -35,8 +35,22 @@ func solvePart1(input string) int {
 	return flashes
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	lines := strings.Split(input, "\r\n")
+	grid := initGrid(lines)
+	width := 10
+	i := 0
+	for {
+		for o, _ := range grid {
+			grid.increase(o, width)
+		}
+		flashes := grid.sumFlashed()
+		if flashes == len(grid) {
+			return i + 1
+		}
+		grid.resetFlashed()
+		i++
+	}
 }
 
 type Grid []Octopus
