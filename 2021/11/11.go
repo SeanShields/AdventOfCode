@@ -22,19 +22,13 @@ func solvePart1(input string) int {
 	lines := strings.Split(input, "\r\n")
 	grid := initGrid(lines)
 	flashes := 0
-	steps := 10
+	steps := 100
 	width := 10
 	for i := 0; i < steps; i++ {
 		for o, _ := range grid {
 			grid.increase(o, width)
 		}
-		for o, _ := range grid {
-			grid.increase(o, width)
-		}
-		f := grid.sumFlashed()
-		flashes += f
-		fmt.Printf("step %v: %v flashes; %v this step\n", i+1, flashes, f)
-		grid.print(width)
+		flashes += grid.sumFlashed()
 		grid.resetFlashed()
 	}
 
@@ -72,7 +66,7 @@ func (grid Grid) selectDigits() []int {
 
 func (grid *Grid) increase(i int, width int) {
 	for o, _ := range *grid {
-		if o != i {
+		if (*grid)[o].flashed || o != i {
 			continue
 		}
 
@@ -82,9 +76,7 @@ func (grid *Grid) increase(i int, width int) {
 		// if energy is greater than 9, reset to 0
 		if (*grid)[o].energy > 9 {
 			(*grid)[o].energy = 0
-			if !(*grid)[o].flashed {
-				(*grid).flash(o, width)
-			}
+			(*grid).flash(o, width)
 		}
 	}
 }
