@@ -39,17 +39,17 @@ func solvePart2(input string) int {
 	lines := strings.Split(input, "\r\n")
 	grid := initGrid(lines)
 	width := 10
-	i := 0
+	step := 1
 	for {
 		for o, _ := range grid {
 			grid.increase(o, width)
 		}
 		flashes := grid.sumFlashed()
 		if flashes == len(grid) {
-			return i + 1
+			return step
 		}
 		grid.resetFlashed()
-		i++
+		step++
 	}
 }
 
@@ -84,10 +84,8 @@ func (grid *Grid) increase(i int, width int) {
 			continue
 		}
 
-		// increase energy
 		(*grid)[o].energy++
 
-		// if energy is greater than 9, reset to 0
 		if (*grid)[o].energy > 9 {
 			(*grid)[o].energy = 0
 			(*grid).flash(o, width)
