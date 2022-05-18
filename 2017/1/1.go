@@ -21,12 +21,7 @@ func solvePart1(input string) int {
 	sum := 0
 	for i, n := range input {
 		num, _ := strconv.Atoi(string(n))
-
-		numToCompareIndex := 0
-		if i < len(input)-1 {
-			numToCompareIndex = i + 1
-		}
-
+		numToCompareIndex := getNextIndex(i, len(input))
 		numToCompare, _ := strconv.Atoi(string(input[numToCompareIndex]))
 		if num == numToCompare {
 			sum += num
@@ -48,8 +43,24 @@ func solvePart2(input string) int {
 	return sum
 }
 
-func getHalfwayIndex(index int, len int) int {
+func getNextIndex(index int, len int) int {
+	i := 0
+	if index < len-1 {
+		i = index + 1
+	}
+	return i
+}
 
+func getHalfwayIndex(index int, len int) int {
+	half := len / 2
+	for i := 0; i < half; i++ {
+		if index == len-1 {
+			index = 0
+		} else {
+			index++
+		}
+	}
+	return index
 }
 
 func readFile(path string) string {
