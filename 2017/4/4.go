@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -30,8 +31,17 @@ func solvePart1(input string) int {
 	return valid
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	valid := 0
+	phrases := strings.Split(input, "\r\n")
+	for _, phrase := range phrases {
+		words := strings.Split(phrase, " ")
+		if hasDuplicateWords(words) || hasAnagram(words) {
+			continue
+		}
+		valid++
+	}
+	return valid
 }
 
 func hasDuplicateWords(words []string) bool {
@@ -43,6 +53,37 @@ func hasDuplicateWords(words []string) bool {
 		}
 	}
 	return false
+}
+
+func hasAnagram(words []string) bool {
+	for i, x := range words {
+		for o, y := range words {
+			if i == o || len(x) != len(y) {
+				continue
+			}
+			matches := true
+			position := 0
+			xx := sortString(x)
+			yy := sortString(y)
+			for position < len(xx) && matches {
+				if string(xx[position]) == string(yy[position]) {
+					position++
+				} else {
+					matches = false
+				}
+			}
+			if matches {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func sortString(w string) string {
+	s := strings.Split(w, "")
+	sort.Strings(s)
+	return strings.Join(s, "")
 }
 
 func readFile(path string) string {
