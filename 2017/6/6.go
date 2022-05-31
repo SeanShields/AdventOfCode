@@ -20,27 +20,50 @@ func main() {
 
 func solvePart1(input string) int {
 	blocks := toInt(strings.Split(input, "\t"))
-	states := [][]int{}
+	states := []blockstate{}
 	i := 0
 	for {
 		state := redistribute(blocks)
 		i++
-		if exists(state, states) {
+		exists, _ := exists(state.blocks, states)
+		if exists {
 			return i
 		}
+
 		s := []int{}
-		for _, st := range state {
-			s = append(s, st)
+		for _, ss := range state.blocks {
+			s = append(s, ss)
 		}
-		states = append(states, s)
+		states = append(states, blockstate{s, i})
 	}
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+type blockstate struct {
+	blocks []int
+	cycle  int
 }
 
-func redistribute(blocks []int) []int {
+func solvePart2(input string) int {
+	blocks := toInt(strings.Split(input, "\t"))
+	states := []blockstate{}
+	i := 0
+	for {
+		i++
+		state := redistribute(blocks)
+		exists, cycle := exists(state.blocks, states)
+		if exists && cycle > 0 {
+			return i - cycle
+		}
+
+		s := []int{}
+		for _, ss := range state.blocks {
+			s = append(s, ss)
+		}
+		states = append(states, blockstate{s, i})
+	}
+}
+
+func redistribute(blocks []int) blockstate {
 	index := indexAtLargest(blocks)
 	redistributionAmount := blocks[index]
 	blocks[index] = 0
@@ -59,16 +82,16 @@ func redistribute(blocks []int) []int {
 		}
 		redistributionAmount--
 	}
-	return blocks
+	return blockstate{blocks, 0}
 }
 
-func exists(x []int, y [][]int) bool {
+func exists(x []int, y []blockstate) (bool, int) {
 	for _, yy := range y {
-		if sliceToInt(x) == sliceToInt(yy) {
-			return true
+		if sliceToInt(x) == sliceToInt(yy.blocks) {
+			return true, yy.cycle
 		}
 	}
-	return false
+	return false, 0
 }
 
 func indexAtLargest(blocks []int) int {
