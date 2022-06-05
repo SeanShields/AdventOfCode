@@ -41,10 +41,6 @@ func solvePart2(input string) string {
 func isChild(current node, tree []node) bool {
 	isChild := false
 	for _, node := range tree {
-		if len(node.children) == 0 {
-			continue
-		}
-
 		for _, child := range node.children {
 			if child == current.name {
 				isChild = true
