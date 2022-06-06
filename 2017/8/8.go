@@ -19,8 +19,24 @@ func main() {
 }
 
 func solvePart1(input string) int {
-	instructions := strings.Split(input, "\n")
+	registers, _ := setRegisters(strings.Split(input, "\n"))
+	largest := 0
+	for _, register := range registers {
+		if register > largest {
+			largest = register
+		}
+	}
+	return largest
+}
+
+func solvePart2(input string) int {
+	_, highest := setRegisters(strings.Split(input, "\n"))
+	return highest
+}
+
+func setRegisters(instructions []string) (map[string]int, int) {
 	registers := make(map[string]int)
+	highest := 0
 	for _, instruction := range instructions {
 		operationAndCondition := strings.Split(instruction, " if ")
 		operation := strings.Split(operationAndCondition[0], " ")
@@ -58,19 +74,12 @@ func solvePart1(input string) int {
 			}
 		}
 		registers[register] = registerAmount
-	}
 
-	largest := 0
-	for _, register := range registers {
-		if register > largest {
-			largest = register
+		if registerAmount > highest {
+			highest = registerAmount
 		}
 	}
-	return largest
-}
-
-func solvePart2(input string) string {
-	return "Not Implemented"
+	return registers, highest
 }
 
 func readFile(path string) string {
