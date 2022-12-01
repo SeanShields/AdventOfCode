@@ -4,9 +4,15 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"sort"
 	"strings"
 )
+
+type Caves []Cave
+type Cave struct {
+	name    string
+	edges   []string
+	visited bool
+}
 
 func main() {
 	path := os.Args[1]
@@ -22,39 +28,18 @@ func main() {
 func solvePart1(input string) int {
 	lines := strings.Split(input, "\r\n")
 	caves := initCaves(lines)
-	sort.Slice(caves, func(i, j int) bool {
-		return caves[i].name == "start" || caves[j].name == "end"
-	})
-	// fmt.Printf("caves: %v\n", caves)
 
-	paths := [][]string{}
-	path := getPath(caves, "start")
+	caves.reset()
 
-	fmt.Printf("path: %v\n", path)
+	for _, cave := range caves {
+		fmt.Printf("%v: %v\n", cave.name, cave)
+	}
 
-	return len(paths)
+	return 0
 }
 
 func solvePart2(input string) string {
 	return "Not Implemented"
-}
-
-type Caves []Cave
-type Cave struct {
-	name    string
-	edges   []string
-	visited bool
-}
-
-func getPath(caves Caves, vertex string) []string {
-	path := []string{vertex}
-	for _, cave := range caves {
-		edges := cave.getEdges(caves)
-		sort.Slice(edges, func(i, j int) bool {
-			return edges[i].name == "end"
-		})
-	}
-	return path
 }
 
 func (cave Cave) getEdges(caves Caves) Caves {
@@ -90,6 +75,15 @@ func initCaves(lines []string) Caves {
 	return caves
 }
 
+func getCave(name string, caves Caves) Cave {
+	for _, cave := range caves {
+		if cave.name == name {
+			return cave
+		}
+	}
+	panic("getCave failed to find cave")
+}
+
 func getAdjacents(points []string, name string) []string {
 	adjacents := []string{}
 	for _, c := range points {
@@ -103,6 +97,12 @@ func getAdjacents(points []string, name string) []string {
 		}
 	}
 	return adjacents
+}
+
+func (caves *Caves) reset() {
+	for _, c := range *caves {
+		c.visited = true
+	}
 }
 
 func (cave Cave) isSmall() bool {
