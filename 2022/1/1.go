@@ -35,16 +35,13 @@ func parseCals(input string) []int {
 	elves := []int{}
 	calories := strings.Split(input, "\r\n")
 	elf := 0
-	for i, calorie := range calories {
+	for _, calorie := range calories {
 		calorie, _ := strconv.Atoi(calorie)
 		elf += calorie
 		if calorie > 0 {
 			elves = append(elves, elf)
-		}
-		if calorie == 0 {
+		} else {
 			elf = 0
-		} else if i == len(calories)-1 {
-			return elves
 		}
 	}
 
