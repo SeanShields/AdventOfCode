@@ -17,32 +17,23 @@ func main() {
 	fmt.Printf("Part 2 Answer: %v", part2Answer)
 }
 
-// A - rock
-// B - paper
-// C - scissors
-
-// X - rock
-// Y - paper
-// Z - scissors
-
+var WIN_SCORE = 6
+var DRAW_SCORE = 3
 var SHAPE_SCORES = map[string]int{
 	"X": 1,
 	"Y": 2,
 	"Z": 3,
 }
-
 var WIN_SCENARIOS = map[string]string{
 	"A": "Y",
 	"B": "Z",
 	"C": "X",
 }
-
 var DRAW_SCENARIOS = map[string]string{
 	"A": "X",
 	"B": "Y",
 	"C": "Z",
 }
-
 var LOSS_SCENARIOS = map[string]string{
 	"A": "Z",
 	"B": "X",
@@ -53,20 +44,14 @@ func solvePart1(input string) int {
 	games := strings.Split(input, "\r\n")
 	total := 0
 	for _, game := range games {
-		split := strings.Split(game, " ")
-		opponent := split[0]
-		me := split[1]
-		win := (opponent == "A" && me == "Y") ||
-			(opponent == "B" && me == "Z") ||
-			(opponent == "C" && me == "X")
-		draw := (opponent == "A" && me == "X") ||
-			(opponent == "B" && me == "Y") ||
-			(opponent == "C" && me == "Z")
+		opponent, me := parseGame(game)
+		win := WIN_SCENARIOS[opponent] == me
+		draw := DRAW_SCENARIOS[opponent] == me
 		score := SHAPE_SCORES[me]
 		if win {
-			score += 6
+			score += WIN_SCORE
 		} else if draw {
-			score += 3
+			score += DRAW_SCORE
 		}
 		total += score
 	}
@@ -77,22 +62,25 @@ func solvePart2(input string) int {
 	games := strings.Split(input, "\r\n")
 	total := 0
 	for _, game := range games {
-		split := strings.Split(game, " ")
-		opponent := split[0]
-		outcome := split[1]
+		opponent, outcome := parseGame(game)
 		win := outcome == "Z"
 		draw := outcome == "Y"
 		score := 0
 		if win {
-			score += SHAPE_SCORES[WIN_SCENARIOS[opponent]] + 6
+			score += SHAPE_SCORES[WIN_SCENARIOS[opponent]] + WIN_SCORE
 		} else if draw {
-			score += SHAPE_SCORES[DRAW_SCENARIOS[opponent]] + 3
+			score += SHAPE_SCORES[DRAW_SCENARIOS[opponent]] + DRAW_SCORE
 		} else {
 			score += SHAPE_SCORES[LOSS_SCENARIOS[opponent]]
 		}
 		total += score
 	}
 	return total
+}
+
+func parseGame(game string) (string, string) {
+	split := strings.Split(game, " ")
+	return split[0], split[1]
 }
 
 func readFile(path string) string {
