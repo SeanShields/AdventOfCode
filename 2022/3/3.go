@@ -38,7 +38,6 @@ func solvePart2(input string) int {
 		group := rucksacks[len(rucksacks)-3:]
 		two := regexp.MustCompile("["+group[0]+"]").FindAllString(group[1], -1)
 		match := regexp.MustCompile("[" + group[2] + "]").FindString(strings.Join(two, ""))
-		fmt.Printf("group: %v\n", group[0]+" "+group[1]+" "+group[2])
 		total += getPriority(match)
 		rucksacks = rucksacks[:len(rucksacks)-3]
 	}
