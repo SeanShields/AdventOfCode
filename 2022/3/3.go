@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -30,8 +31,17 @@ func solvePart1(input string) int {
 	return total
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	total := 0
+	rucksacks := strings.Split(input, "\r\n")
+	for len(rucksacks) > 0 {
+		group := rucksacks[len(rucksacks)-3:]
+		two := regexp.MustCompile("["+group[0]+"]").FindAllString(group[1], -1)
+		match := regexp.MustCompile("[" + group[2] + "]").FindString(joinStrings(two))
+		total += getPriority(match)
+		rucksacks = rucksacks[:len(rucksacks)-3]
+	}
+	return total
 }
 
 var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -45,6 +55,20 @@ func getPriority(item string) int {
 		priority++
 	}
 	panic("Failed to get priority")
+}
+
+func sortString(w string) string {
+	s := strings.Split(w, "")
+	sort.Strings(s)
+	return strings.Join(s, "")
+}
+
+func joinStrings(strings []string) string {
+	s := ""
+	for _, ss := range strings {
+		s += ss
+	}
+	return s
 }
 
 func readFile(path string) string {
