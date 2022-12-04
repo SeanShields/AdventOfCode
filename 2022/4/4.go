@@ -22,17 +22,11 @@ func solvePart1(input string) int {
 	total := 0
 	rows := strings.Split(input, "\r\n")
 	for _, row := range rows {
-		pair := strings.Split(row, ",")
-		left := strings.Split(pair[0], "-")
-		right := strings.Split(pair[1], "-")
-		left1, _ := strconv.Atoi(left[0])
-		left2, _ := strconv.Atoi(left[1])
-		right1, _ := strconv.Atoi(right[0])
-		right2, _ := strconv.Atoi(right[1])
-		match := (existsInRange(left1, right1, right2) &&
-			existsInRange(left2, right1, right2)) ||
-			(existsInRange(right1, left1, left2) &&
-				existsInRange(right2, left1, left2))
+		sections := parseSections(row)
+		match := (existsInRange(sections.left1, sections.right1, sections.right2) &&
+			existsInRange(sections.left2, sections.right1, sections.right2)) ||
+			(existsInRange(sections.right1, sections.left1, sections.left2) &&
+				existsInRange(sections.right2, sections.left1, sections.left2))
 		if match {
 			total++
 		}
@@ -44,22 +38,35 @@ func solvePart2(input string) int {
 	total := 0
 	rows := strings.Split(input, "\r\n")
 	for _, row := range rows {
-		pair := strings.Split(row, ",")
-		left := strings.Split(pair[0], "-")
-		right := strings.Split(pair[1], "-")
-		left1, _ := strconv.Atoi(left[0])
-		left2, _ := strconv.Atoi(left[1])
-		right1, _ := strconv.Atoi(right[0])
-		right2, _ := strconv.Atoi(right[1])
-		match := existsInRange(left1, right1, right2) ||
-			existsInRange(left2, right1, right2) ||
-			existsInRange(right1, left1, left2) ||
-			existsInRange(right2, left1, left2)
+		sections := parseSections(row)
+		match := existsInRange(sections.left1, sections.right1, sections.right2) ||
+			existsInRange(sections.left2, sections.right1, sections.right2) ||
+			existsInRange(sections.right1, sections.left1, sections.left2) ||
+			existsInRange(sections.right2, sections.left1, sections.left2)
 		if match {
 			total++
 		}
 	}
 	return total
+}
+
+type sections struct {
+	left1  int
+	left2  int
+	right1 int
+	right2 int
+}
+
+func parseSections(row string) sections {
+	sections := sections{}
+	pair := strings.Split(row, ",")
+	left := strings.Split(pair[0], "-")
+	right := strings.Split(pair[1], "-")
+	sections.left1, _ = strconv.Atoi(left[0])
+	sections.left2, _ = strconv.Atoi(left[1])
+	sections.right1, _ = strconv.Atoi(right[0])
+	sections.right2, _ = strconv.Atoi(right[1])
+	return sections
 }
 
 func existsInRange(num int, start int, end int) bool {
