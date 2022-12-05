@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"sort"
 	"strings"
 )
 
@@ -55,12 +54,6 @@ func getPriority(item string) int {
 		priority++
 	}
 	panic("Failed to get priority")
-}
-
-func sortString(w string) string {
-	s := strings.Split(w, "")
-	sort.Strings(s)
-	return strings.Join(s, "")
 }
 
 func readFile(path string) string {
