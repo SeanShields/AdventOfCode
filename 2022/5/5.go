@@ -24,8 +24,7 @@ func solvePart1(input string) string {
 	for _, instruction := range instructions {
 		crates.movePart1(instruction.amount, instruction.from, instruction.to)
 	}
-	top := getTop(crates)
-	return top
+	return getTop(crates)
 }
 
 func solvePart2(input string) string {
@@ -33,88 +32,55 @@ func solvePart2(input string) string {
 	for _, instruction := range instructions {
 		crates.movePart2(instruction.amount, instruction.from, instruction.to)
 	}
-	top := getTop(crates)
-	return top
+	return getTop(crates)
 }
 
 func parse(input string) (crates, []instruction) {
-	crates := crates{
-		1: Stack(),
-		2: Stack(),
-		3: Stack(),
-		4: Stack(),
-		5: Stack(),
-		6: Stack(),
-		7: Stack(),
-		8: Stack(),
-		9: Stack(),
+	return initCrates(input), initInstructions(input)
+}
+
+func initCrates(input string) crates {
+	crates := crates{}
+	lines := strings.Split(input, "\r\n")
+	num := 1
+	i := 1
+	for i < len(lines[0]) {
+		crates[num] = Stack()
+		i += 4
+		num++
 	}
 
-	crates[1].Push("T")
-	crates[1].Push("D")
-	crates[1].Push("W")
-	crates[1].Push("Z")
-	crates[1].Push("V")
-	crates[1].Push("P")
+	reCrates := regexp.MustCompile(`\[[A-Z]\]`)
+	for _, line := range lines {
+		if !reCrates.MatchString(line) {
+			break
+		}
+		num = 1
+		i = 1
+		for i < len(line) {
+			char := string(line[i])
+			if regexp.MustCompile(`[A-Z]`).MatchString(char) {
+				crates[num].Push(char)
+			}
+			i += 4
+			num++
+		}
+	}
 
-	crates[2].Push("L")
-	crates[2].Push("S")
-	crates[2].Push("W")
-	crates[2].Push("V")
-	crates[2].Push("F")
-	crates[2].Push("J")
-	crates[2].Push("D")
+	for _, crate := range crates {
+		reversed := []string{}
+		for crate.Length() > 0 {
+			reversed = append(reversed, crate.Pop())
+		}
+		for _, reverse := range reversed {
+			crate.Push(reverse)
+		}
+	}
 
-	crates[3].Push("Z")
-	crates[3].Push("M")
-	crates[3].Push("L")
-	crates[3].Push("S")
-	crates[3].Push("V")
-	crates[3].Push("T")
-	crates[3].Push("B")
-	crates[3].Push("H")
+	return crates
+}
 
-	crates[4].Push("R")
-	crates[4].Push("S")
-	crates[4].Push("J")
-
-	crates[5].Push("C")
-	crates[5].Push("Z")
-	crates[5].Push("B")
-	crates[5].Push("G")
-	crates[5].Push("F")
-	crates[5].Push("M")
-	crates[5].Push("L")
-	crates[5].Push("W")
-
-	crates[6].Push("Q")
-	crates[6].Push("W")
-	crates[6].Push("V")
-	crates[6].Push("H")
-	crates[6].Push("Z")
-	crates[6].Push("R")
-	crates[6].Push("G")
-	crates[6].Push("B")
-
-	crates[7].Push("V")
-	crates[7].Push("J")
-	crates[7].Push("P")
-	crates[7].Push("C")
-	crates[7].Push("B")
-	crates[7].Push("D")
-	crates[7].Push("N")
-
-	crates[8].Push("P")
-	crates[8].Push("T")
-	crates[8].Push("B")
-	crates[8].Push("Q")
-
-	crates[9].Push("H")
-	crates[9].Push("G")
-	crates[9].Push("Z")
-	crates[9].Push("R")
-	crates[9].Push("C")
-
+func initInstructions(input string) []instruction {
 	instructions := []instruction{}
 	reInstructions := regexp.MustCompile(`move \d+ from \d+ to \d+`)
 	for _, line := range strings.Split(input, "\r\n") {
@@ -127,8 +93,7 @@ func parse(input string) (crates, []instruction) {
 		to, _ := strconv.Atoi(matches[2])
 		instructions = append(instructions, instruction{amount, from, to})
 	}
-
-	return crates, instructions
+	return instructions
 }
 
 func (c *crates) movePart1(amount int, from int, to int) {
@@ -152,7 +117,7 @@ func (c *crates) movePart2(amount int, from int, to int) {
 func getTop(crates crates) string {
 	top := ""
 	i := 1
-	for i <= 3 {
+	for i <= len(crates) {
 		top += crates[i].Peek()
 		i++
 	}
