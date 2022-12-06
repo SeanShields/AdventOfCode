@@ -39,13 +39,12 @@ func locate(input string, padding int) int {
 }
 
 func unique(s string) bool {
-	s = sortString(s)
-	i := 1
-	for i < len(s) {
-		if string(s[i]) == string(s[i-1]) {
-			return false
+	for i, x := range s {
+		for ii, y := range s {
+			if i != ii && x == y {
+				return false
+			}
 		}
-		i++
 	}
 	return true
 }
