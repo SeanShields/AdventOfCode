@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"sort"
-	"strings"
 )
 
 func main() {
@@ -47,12 +45,6 @@ func unique(s string) bool {
 		}
 	}
 	return true
-}
-
-func sortString(w string) string {
-	s := strings.Split(w, "")
-	sort.Strings(s)
-	return strings.Join(s, "")
 }
 
 func readFile(path string) string {
