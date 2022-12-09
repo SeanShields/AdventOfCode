@@ -23,7 +23,7 @@ func solvePart1(input string) int {
 	trees := parseGrid(input)
 	total := 0
 	for _, tree := range trees {
-		if visible(tree, trees) {
+		if tree.visible(trees) {
 			total++
 		}
 	}
@@ -34,7 +34,7 @@ func solvePart2(input string) int {
 	trees := parseGrid(input)
 	highest := 0
 	for _, tree := range trees {
-		score := score(tree, trees)
+		score := tree.score(trees)
 		if score > highest {
 			highest = score
 		}
@@ -48,7 +48,7 @@ type tree struct {
 	y      int
 }
 
-func visible(tree tree, trees []tree) bool {
+func (tree tree) visible(trees []tree) bool {
 	length := int(math.Sqrt(float64(len(trees))))
 	if tree.x == 0 || tree.x == int(length)-1 {
 		return true
@@ -96,7 +96,7 @@ func visible(tree tree, trees []tree) bool {
 	return left || right || up || down
 }
 
-func score(tree tree, trees []tree) int {
+func (tree tree) score(trees []tree) int {
 	length := int(math.Sqrt(float64(len(trees))))
 	if tree.x == 0 || tree.x == int(length)-1 {
 		return 0
