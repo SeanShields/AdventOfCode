@@ -30,8 +30,16 @@ func solvePart1(input string) int {
 	return total
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	trees := parseGrid(input)
+	highest := 0
+	for _, tree := range trees {
+		score := score(tree, trees)
+		if score > highest {
+			highest = score
+		}
+	}
+	return highest
 }
 
 type tree struct {
@@ -86,6 +94,58 @@ func visible(tree tree, trees []tree) bool {
 	}
 
 	return left || right || up || down
+}
+
+func score(tree tree, trees []tree) int {
+	length := int(math.Sqrt(float64(len(trees))))
+	if tree.x == 0 || tree.x == int(length)-1 {
+		return 0
+	}
+
+	row := tree.getRow(trees)
+	col := tree.getCol(trees)
+
+	left := 0
+	l := tree.y - 1
+	for l >= 0 {
+		left++
+		if tree.height <= row[l].height {
+			break
+		}
+		l--
+	}
+
+	right := 0
+	r := tree.y + 1
+	for r < length {
+		right++
+		if tree.height <= row[r].height {
+			break
+		}
+		r++
+	}
+
+	up := 0
+	u := tree.x - 1
+	for u >= 0 {
+		up++
+		if tree.height <= col[u].height {
+			break
+		}
+		u--
+	}
+
+	down := 0
+	d := tree.x + 1
+	for d < length {
+		down++
+		if tree.height <= col[d].height {
+			break
+		}
+		d++
+	}
+
+	return left * right * up * down
 }
 
 func (this tree) getRow(tt []tree) []tree {
