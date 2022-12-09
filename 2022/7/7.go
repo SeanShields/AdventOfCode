@@ -23,12 +23,10 @@ func solvePart1(input string) int {
 	dirs := parseTree(input)
 	totals := []int{}
 	for _, dir := range dirs {
-		totals = append(totals, getDirSize(dir, dirs, 0))
+		total := getDirSize(dir, dirs)
+		totals = append(totals, total)
 	}
 	return sum(totals, 100000)
-
-	// high:
-	// 1537425
 }
 
 func solvePart2(input string) string {
@@ -47,13 +45,13 @@ type dir struct {
 	files  []file
 }
 
-func getDirSize(dir dir, dirs []dir, size int) int {
+func getDirSize(dir dir, dirs []dir) int {
+	size := 0
 	for _, file := range dir.files {
 		size += file.size
 	}
 	for _, child := range dir.dirs {
-		c := find(child, dirs)
-		return getDirSize(c, dirs, size)
+		size += getDirSize(findChild(child, dir.id, dirs), dirs)
 	}
 	return size
 }
@@ -61,14 +59,13 @@ func getDirSize(dir dir, dirs []dir, size int) int {
 func parseTree(input string) []dir {
 	lines := strings.Split(input, "\r\n")
 	id := 1
-	root := dir{id: id, name: "/"}
+	root := dir{id: 0, parent: -1, name: "/"}
 	dirs := []dir{root}
 	current := root
 	for i, line := range lines {
 		if i == 0 {
 			continue
 		}
-		fmt.Printf("%v\n", line)
 		directory := directory(line)
 		cd := cd(line)
 		ls := ls(line)
@@ -84,19 +81,18 @@ func parseTree(input string) []dir {
 				current = child
 			}
 		} else {
-			dirs = remove(current.name, dirs)
 			if directory != "" {
-				id++
 				new := dir{id: id, name: directory, parent: current.id}
 				current.dirs = append(current.dirs, directory)
 				dirs = append(dirs, new)
+				id++
 			} else {
 				file := getFile(line)
 				current.files = append(current.files, file)
 			}
+			dirs = remove(current.id, dirs)
 			dirs = append(dirs, current)
 		}
-		// print(dirs)
 	}
 	return dirs
 }
@@ -118,14 +114,17 @@ func sum(arr []int, max int) int {
 	return s
 }
 
-func remove(name string, dirs []dir) []dir {
-	ii := 0
+func remove(id int, dirs []dir) []dir {
+	ii := -1
 	for i, dir := range dirs {
-		if name == dir.name {
+		if id == dir.id {
 			ii = i
 		}
 	}
-	return append(dirs[:ii], dirs[ii+1:]...)
+	if ii > -1 {
+		return append(dirs[:ii], dirs[ii+1:]...)
+	}
+	return dirs
 }
 
 func find(name string, dirs []dir) dir {
@@ -143,7 +142,7 @@ func findChild(name string, parent int, dirs []dir) dir {
 			return dir
 		}
 	}
-	panic("failed to locate child dir")
+	panic("failed to locate child dir: " + name + " with parent: " + strconv.Itoa(parent))
 }
 
 func findParent(current dir, list []dir) dir {
