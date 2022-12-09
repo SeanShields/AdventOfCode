@@ -29,8 +29,18 @@ func solvePart1(input string) int {
 	return sum(totals, 100000)
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	dirs := parseTree(input)
+	required := 30000000
+	remove := required - getAvailableSpace(dirs)
+	eligible := []int{}
+	for _, dir := range dirs {
+		size := getDirSize(dir, dirs)
+		if size >= remove {
+			eligible = append(eligible, size)
+		}
+	}
+	return min(eligible)
 }
 
 type file struct {
@@ -43,6 +53,16 @@ type dir struct {
 	name   string
 	dirs   []string
 	files  []file
+}
+
+func getAvailableSpace(dirs []dir) int {
+	used := 0
+	for _, dir := range dirs {
+		if dir.name == "/" {
+			used = getDirSize(dir, dirs)
+		}
+	}
+	return 70000000 - used
 }
 
 func getDirSize(dir dir, dirs []dir) int {
@@ -112,6 +132,19 @@ func sum(arr []int, max int) int {
 		}
 	}
 	return s
+}
+
+func min(arr []int) int {
+	if len(arr) == 1 {
+		return arr[0]
+	}
+	min := arr[0]
+	for i := 1; i < len(arr); i++ {
+		if arr[i] < min {
+			min = arr[i]
+		}
+	}
+	return min
 }
 
 func remove(id int, dirs []dir) []dir {
