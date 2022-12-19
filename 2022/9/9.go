@@ -28,7 +28,6 @@ func solvePart1(input string) int {
 		split := strings.Split(instruction, " ")
 		direction := split[0]
 		length, _ := strconv.Atoi(split[1])
-
 		for length > 0 {
 			switch direction {
 			case "U":
@@ -44,9 +43,8 @@ func solvePart1(input string) int {
 				head.y--
 				break
 			}
-
 			if !touching(head, tail) {
-				tail = moveTail(head, tail)
+				tail = moveToHead(head, tail)
 				exists := false
 				for _, v := range visited {
 					if tail.x == v.x && tail.y == v.y {
@@ -57,16 +55,69 @@ func solvePart1(input string) int {
 					visited = append(visited, tail)
 				}
 			}
-
 			length--
 		}
 	}
-
 	return len(visited)
 }
 
-func solvePart2(input string) string {
-	return "Not Implemented"
+func solvePart2(input string) int {
+	vectors := [10]vector{
+		{0, 0},
+		{0, 0},
+		{0, 0},
+		{0, 0},
+		{0, 0},
+		{0, 0},
+		{0, 0},
+		{0, 0},
+		{0, 0},
+		{0, 0},
+	}
+	visited := []vector{{0, 0}}
+	instructions := strings.Split(input, "\r\n")
+	for _, instruction := range instructions {
+		split := strings.Split(instruction, " ")
+		direction := split[0]
+		length, _ := strconv.Atoi(split[1])
+		for l := length; l > 0; l-- {
+			for v, _ := range vectors {
+				if v == 0 {
+					switch direction {
+					case "U":
+						vectors[v].x++
+						break
+					case "R":
+						vectors[v].y++
+						break
+					case "D":
+						vectors[v].x--
+						break
+					case "L":
+						vectors[v].y--
+						break
+					}
+				} else if !touching(vectors[v-1], vectors[v]) {
+					next := moveToHead(vectors[v-1], vectors[v])
+					vectors[v] = next
+				}
+
+				if v == 9 {
+					exists := false
+					for _, s := range visited {
+						if vectors[v].x == s.x && vectors[v].y == s.y {
+							exists = true
+						}
+					}
+					if !exists {
+						visited = append(visited, vectors[v])
+					}
+				}
+			}
+		}
+		fmt.Printf("%v: %v\n\n", instruction, vectors)
+	}
+	return len(visited)
 }
 
 type vector struct {
@@ -74,7 +125,7 @@ type vector struct {
 	y int
 }
 
-func moveTail(head vector, tail vector) vector {
+func moveToHead(head vector, tail vector) vector {
 	potentials := []vector{
 		{tail.x, tail.y + 1},
 		{tail.x + 1, tail.y + 1},
