@@ -11,5 +11,5 @@ def readFile(fileName):
       return f.read()
 
 if __name__ == "__main__":
-    solvePart1('input.txt')
-    solvePart2('input.txt')
+    print('Part 1:', solvePart1('input.txt'))
+    print('Part 2:', solvePart2('input.txt'))
