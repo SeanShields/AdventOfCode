@@ -2,20 +2,19 @@ def solvePart1(fileName):
   lines = readFile(fileName).split('\n')
   safe = 0
   for l in lines:
-     line = l.split(' ')
-     if lineSafe(line):
-        safe += 1
+    line = l.split(' ')
+    if lineSafe(line):
+      safe += 1
   return safe
 
 def solvePart2(fileName):
   lines = readFile(fileName).split('\n')
   safe = 0
   for l in lines:
-     line = l.split(' ')
-     if lineSafe(line):
-        safe += 1
+    line = l.split(' ')
+    if lineSafe(line):
+      safe += 1
   return safe
-
 
 def increasing(current, next):
    return next > current
