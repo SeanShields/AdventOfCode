@@ -8,16 +8,21 @@ def solvePart1(fileName):
   return safe
 
 def solvePart2(fileName):
-  lines = readFile(fileName).split('\n')
+  fileLines = readFile(fileName).split('\n')
   safe = 0
-  for l in lines:
-    line = l.split(' ')
-    if lineSafe(line):
-      safe += 1
+  for fileLine in fileLines:
+    line = fileLine.split(' ')
+    currentLine = line
+    for i, _ in enumerate(line):
+      if lineSafe(currentLine):
+        safe += 1
+        break
+      else:
+        currentLine = line.copy()
+        del currentLine[i]
+      if i == len(currentLine) - 1 and lineSafe(currentLine):
+        safe += 1
   return safe
-
-def increasing(current, next):
-   return next > current
 
 def lineSafe(line):
   minDiff = 1
@@ -47,5 +52,5 @@ def readFile(fileName):
       return f.read()
 
 if __name__ == "__main__":
-    print('Part 1:', solvePart1('test.txt'))
-    print('Part 2:', solvePart2('test.txt'))
+    print('Part 1:', solvePart1('input.txt'))
+    print('Part 2:', solvePart2('input.txt'))
