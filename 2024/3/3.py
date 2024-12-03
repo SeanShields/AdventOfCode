@@ -17,10 +17,7 @@ def multiplyMatches(matches):
     isDo = match == "do()"
     isDont = match == "don't()"
     if isDo or isDont:
-      if match == "do()":
-        do = True
-      else:
-        do = False
+      do = True if isDo else False
       continue
   
     if not do:
@@ -37,5 +34,5 @@ def readFile(fileName):
       return f.read()
 
 if __name__ == "__main__":
-    # print('Part 1:', solvePart1('input.txt'))
+    print('Part 1:', solvePart1('input.txt'))
     print('Part 2:', solvePart2('input.txt'))
