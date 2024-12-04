@@ -1,10 +1,10 @@
 def solvePart1(fileName):
   file = readFile(fileName)
-  print(file)
+  return file
 
 def solvePart2(fileName):
   file = readFile(fileName)
-  print(file)
+  return file
 
 def readFile(fileName):
    with open(fileName) as f:
