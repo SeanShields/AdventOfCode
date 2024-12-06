@@ -7,21 +7,49 @@ def solvePart1(fileName):
   total = 0
   for rowIndex, row in enumerate(grid):
     for columnIndex, _ in enumerate(row):
-      total += check(rowIndex, columnIndex, "XMAS", grid)
+      total += checkXMAS(rowIndex, columnIndex, grid)
   return total
 
 def solvePart2(fileName):
-  file = readFile(fileName)
-  return file
+  file = readFile(fileName).split('\n')
+  grid = []
+  for line in file:
+    grid.append(list(line))
 
-def resetCache(rowIndex, colIndex):
-  global textCache, rowCache, colCache
-  textCache = ""
-  rowCache = rowIndex
-  colCache = colIndex
+  total = 0
+  for rowIndex, row in enumerate(grid):
+    for columnIndex, _ in enumerate(row):
+      if checkMASX(rowIndex, columnIndex, grid):
+        total += 1
+  return total
 
-def check(rowIndex, colIndex, text, grid):
+def checkMASX(rowIndex, colIndex, grid):
+  colLength = len(grid[0])
+  rowLength = len(grid)
+
+  if grid[rowIndex][colIndex] != "A" \
+    or \
+      (rowIndex == 0 \
+      or colIndex == 0 \
+      or rowIndex == rowLength - 1 or colIndex == colLength - 1):
+    return False
+
+  topRight = grid[rowIndex - 1][colIndex + 1]
+  topLeft = grid[rowIndex - 1][colIndex - 1]
+  bottomRight = grid[rowIndex + 1][colIndex + 1]
+  bottomLeft = grid[rowIndex + 1][colIndex - 1]
+
+  firstHalf = topLeft == "M" and bottomRight == "S" \
+    or topLeft == "S" and bottomRight == "M"
+  
+  secondHalf = topRight == "M" and bottomLeft == "S" \
+    or topRight == "S" and bottomLeft == "M"
+
+  return firstHalf and secondHalf
+
+def checkXMAS(rowIndex, colIndex, grid):
   global textCache, rowCache, colCache
+  text = "XMAS"
   textLength = len(text)
   colLength = len(grid[0])
   rowLength = len(grid)
@@ -121,10 +149,16 @@ def check(rowIndex, colIndex, text, grid):
 
   return total
 
+def resetCache(rowIndex, colIndex):
+  global textCache, rowCache, colCache
+  textCache = ""
+  rowCache = rowIndex
+  colCache = colIndex
+
 def readFile(fileName):
    with open(fileName) as f:
       return f.read()
 
 if __name__ == "__main__":
     print('Part 1:', solvePart1('input.txt'))
-    # print('Part 2:', solvePart2('test.txt'))
+    print('Part 2:', solvePart2('input.txt'))
