@@ -14,16 +14,20 @@ def solvePart2(fileName):
   file = readFile(fileName)
   return file
 
-def check(rowIndex, colIndex, text, grid):
-  total = 0
-  
-  textLength = len(text)
-  colLength = len(grid[0])
-  rowLength = len(grid)
-
+def resetCache(rowIndex, colIndex):
+  global textCache, rowCache, colCache
   textCache = ""
   rowCache = rowIndex
   colCache = colIndex
+
+def check(rowIndex, colIndex, text, grid):
+  global textCache, rowCache, colCache
+  textLength = len(text)
+  colLength = len(grid[0])
+  rowLength = len(grid)
+  total = 0
+
+  resetCache(rowIndex, colIndex)
 
   # up
   for _ in range(textLength):
@@ -33,11 +37,9 @@ def check(rowIndex, colIndex, text, grid):
     elif rowCache == 0:
       break
     rowCache -= 1
-  
-  textCache = ""
-  rowCache = rowIndex
-  colCache = colIndex
 
+  resetCache(rowIndex, colIndex)
+  
   # up-right
   for _ in range(textLength):
     textCache += grid[rowCache][colCache]
@@ -48,9 +50,7 @@ def check(rowIndex, colIndex, text, grid):
     rowCache -= 1
     colCache += 1
 
-  textCache = ""
-  rowCache = rowIndex
-  colCache = colIndex
+  resetCache(rowIndex, colIndex)
 
     # right
   for _ in range(textLength):
@@ -61,9 +61,7 @@ def check(rowIndex, colIndex, text, grid):
       break
     colCache += 1
 
-  textCache = ""
-  rowCache = rowIndex
-  colCache = colIndex
+  resetCache(rowIndex, colIndex)
 
   # down-right
   for _ in range(textLength):
@@ -75,9 +73,7 @@ def check(rowIndex, colIndex, text, grid):
     rowCache += 1
     colCache += 1
 
-  textCache = ""
-  rowCache = rowIndex
-  colCache = colIndex
+  resetCache(rowIndex, colIndex)
 
   # down
   for _ in range(textLength):
@@ -88,9 +84,7 @@ def check(rowIndex, colIndex, text, grid):
       break
     rowCache += 1
 
-  textCache = ""
-  rowCache = rowIndex
-  colCache = colIndex
+  resetCache(rowIndex, colIndex)
 
   # down-left
   for _ in range(textLength):
@@ -102,9 +96,7 @@ def check(rowIndex, colIndex, text, grid):
     rowCache += 1
     colCache -= 1
 
-  textCache = ""
-  rowCache = rowIndex
-  colCache = colIndex
+  resetCache(rowIndex, colIndex)
 
   # left
   for _ in range(textLength):
@@ -115,9 +107,7 @@ def check(rowIndex, colIndex, text, grid):
       break
     colCache -= 1
 
-  textCache = ""
-  rowCache = rowIndex
-  colCache = colIndex
+  resetCache(rowIndex, colIndex)
 
   # up-left
   for _ in range(textLength):
