@@ -16,7 +16,7 @@ def solvePart2(fileName):
 
   similarity = 0
   for num in a:
-    similarity += getSimilarity(num, timesInList(num, b))
+    similarity += num * timesInList(num, b)
   return similarity
 
 def timesInList(num, list):
@@ -25,9 +25,6 @@ def timesInList(num, list):
     if x == num:
       total += 1
   return total
-
-def getSimilarity(num, count):
-   return num * count
 
 def getLists(lines):
   a = []
